@@ -39,6 +39,7 @@ Zeitwerk::Loader.for_gem.tap do |loader|
     "#{lib}/action_cable/version.rb",
     "#{lib}/action_cable/deprecator.rb",
     "#{lib}/actioncable-next.rb",
+    "#{lib}/action_cable/next",
   )
 
   loader.do_not_eager_load(
