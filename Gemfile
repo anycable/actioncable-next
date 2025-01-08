@@ -17,6 +17,10 @@ gem "cgi", ">= 0.3.6", require: false
 # Workaround until all supported Ruby versions ship with uri version 0.13.1 or higher.
 gem "uri", ">= 0.13.1", require: false
 
+# For benchmarks and profiling
+gem "benchmark-ips", require: false
+gem "vernier", require: false
+
 group :rubocop do
   gem "rubocop", ">= 1.25.1", require: false
   gem "rubocop-minitest", require: false

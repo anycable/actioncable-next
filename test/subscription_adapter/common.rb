@@ -27,7 +27,7 @@ module CommonSubscriptionAdapterTest
   def subscribe_as_queue(channel, adapter = @rx_adapter)
     queue = Queue.new
 
-    callback = -> data { queue << data }
+    callback = -> msg { queue << msg.data }
     subscribed = Concurrent::Event.new
     adapter.subscribe(channel, callback, Proc.new { subscribed.set })
     subscribed.wait(WAIT_WHEN_EXPECTING_EVENT)

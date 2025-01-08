@@ -91,6 +91,9 @@ class ClientTest < ActionCable::TestCase
 
     # and now the "real" setup for our test:
     server.config.disable_request_forgery_protection = true
+
+    # enable fastlane broadcasts (if env variable provided)
+    server.config.fastlane_broadcasts_enabled = true if %w[1 t true].include?(ENV["ACTION_CABLE_FASTLANE_BROADCASTS"])
   end
 
   def with_puma_server(rack_app = ActionCable.server, port = 3099)

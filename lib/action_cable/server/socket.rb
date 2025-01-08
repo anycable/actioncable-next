@@ -47,6 +47,12 @@ module ActionCable
         websocket.transmit encode(cable_message)
       end
 
+      def raw_transmit(message)
+        return unless websocket.alive?
+
+        websocket.transmit message
+      end
+
       # Close the WebSocket connection.
       def close(...)
         websocket.close(...) if websocket.alive?

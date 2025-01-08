@@ -157,10 +157,21 @@ module ActionCable
         # Always wrap the outermost handler to invoke the user handler on the worker
         # pool rather than blocking the event loop.
         def worker_pool_stream_handler(broadcasting, user_handler, coder: nil)
+          if !user_handler && !coder && connection.config.fastlane_broadcasts_enabled
+            return opt_worker_pool_stream_handler(broadcasting)
+          end
+
           handler = stream_handler(broadcasting, user_handler, coder: coder)
 
           -> message do
-            connection.perform_work handler, :call, message
+            connection.perform_work handler, :call, message.data
+          end
+        end
+
+        # Optimized stream handler that avoids double JSON encoding/decoding on broadcast
+        def opt_worker_pool_stream_handler(broadcasting)
+          -> (message) do
+            connection.raw_transmit message.encoded_for(@identifier)
           end
         end
 

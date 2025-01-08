@@ -5,6 +5,19 @@
 module ActionCable
   module SubscriptionAdapter
     class SubscriberMap
+      class Message < Struct.new(:data)
+        def initialize(...)
+          super
+          @cache = Concurrent::Map.new
+        end
+
+        def encoded_for(identifier)
+          @cache.compute_if_absent(identifier) do
+            ActiveSupport::JSON.encode({ identifier: identifier, message: ActiveSupport::JSON.decode(data) })
+          end
+        end
+      end
+
       def initialize
         @subscribers = Hash.new { |h, k| h[k] = [] }
         @sync = Mutex.new
@@ -41,8 +54,10 @@ module ActionCable
           @subscribers[channel].dup
         end
 
+        msg = Message.new(message)
+
         list.each do |subscriber|
-          invoke_callback(subscriber, message)
+          invoke_callback(subscriber, msg)
         end
       end
 
