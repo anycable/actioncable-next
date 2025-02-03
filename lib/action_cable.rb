@@ -23,6 +23,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+require "logger"
 require "active_support"
 require "active_support/rails"
 require "zeitwerk"
