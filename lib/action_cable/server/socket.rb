@@ -9,7 +9,7 @@ module ActionCable
     # This connection object is also responsible for handling encoding and decoding of messages, so the user-level
     # connection object shouldn't know about such details.
     class Socket
-      attr_reader :server, :env, :protocol, :logger, :connection
+      attr_reader :server, :env, :protocol, :logger, :connection, :request_id
       private attr_reader :worker_pool
 
       delegate :event_loop, :pubsub, :config, to: :server
@@ -24,6 +24,7 @@ module ActionCable
         @message_buffer = MessageBuffer.new(self)
 
         @protocol = nil
+        @request_id = env["action_dispatch.request_id"] || env["HTTP_X_REQUEST_ID"]
         @connection = config.connection_class.call.new(server, self)
       end
 

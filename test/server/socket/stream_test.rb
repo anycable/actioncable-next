@@ -7,8 +7,11 @@ require "stubs/test_server"
 class ActionCable::Server::Socket::StreamTest < ActionCable::TestCase
   class TestSocket < ActionCable::Server::Socket
     class TestConnection
+      attr_reader :sid
+
       def initialize(socket)
         @socket = socket
+        @sid = socket.request_id
       end
 
       def handle_open = @socket.connect
@@ -64,7 +67,8 @@ class ActionCable::Server::Socket::StreamTest < ActionCable::TestCase
     def open_connection(io)
       env = Rack::MockRequest.env_for "/test",
         "HTTP_CONNECTION" => "upgrade", "HTTP_UPGRADE" => "websocket",
-        "HTTP_HOST" => "localhost", "HTTP_ORIGIN" => "http://rubyonrails.com"
+        "HTTP_HOST" => "localhost", "HTTP_ORIGIN" => "http://rubyonrails.com",
+        "action_dispatch.request_id" => SecureRandom.uuid
       env["rack.hijack"] = -> { env["rack.hijack_io"] = io }
 
       TestSocket.new(@server, env).tap do |socket|

@@ -11,6 +11,12 @@ class BaseTest < ActionCable::TestCase
   end
 
   class FakeConnection
+    attr_reader :sid
+
+    def initialize
+      @sid = SecureRandom.hex(3)
+    end
+
     def close
     end
   end

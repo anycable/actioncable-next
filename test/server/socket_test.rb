@@ -6,10 +6,11 @@ require "active_support/core_ext/object/json"
 
 class ActionCable::Server::SocketTest < ActionCable::TestCase
   class Connection
-    attr_reader :last_message, :socket, :connected
+    attr_reader :last_message, :socket, :connected, :sid
 
     def initialize(_server, socket)
       @socket = socket
+      @sid = SecureRandom.hex(3)
     end
 
     def handle_open

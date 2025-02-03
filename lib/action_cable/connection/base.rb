@@ -59,7 +59,7 @@ module ActionCable
       include Callbacks
       include ActiveSupport::Rescuable
 
-      attr_reader :subscriptions, :logger
+      attr_reader :subscriptions, :logger, :sid
       private attr_reader :server, :socket
 
       delegate :pubsub, :executor, :config, :broadcast, to: :server
@@ -68,6 +68,8 @@ module ActionCable
       def initialize(server, socket)
         @server = server
         @socket = socket
+        # unique session identifier (obtained from the request_id by default)
+        @sid = socket.try(:request_id) || SecureRandom.uuid
 
         @logger = socket.logger
         @subscriptions  = Subscriptions.new(self)

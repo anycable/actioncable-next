@@ -6,8 +6,11 @@ require "stubs/test_server"
 class ActionCable::Server::Socket::ClientSocketTest < ActionCable::TestCase
   class TestSocket < ActionCable::Server::Socket
     class TestConnection
+      attr_reader :sid
+
       def initialize(socket)
         @socket = socket
+        @sid = socket.request_id
       end
 
       def handle_open = @socket.connect
@@ -74,7 +77,8 @@ class ActionCable::Server::Socket::ClientSocketTest < ActionCable::TestCase
     def open_connection
       env = Rack::MockRequest.env_for "/test",
         "HTTP_CONNECTION" => "upgrade", "HTTP_UPGRADE" => "websocket",
-        "HTTP_HOST" => "localhost", "HTTP_ORIGIN" => "http://rubyonrails.com"
+        "HTTP_HOST" => "localhost", "HTTP_ORIGIN" => "http://rubyonrails.com",
+        "HTTP_X_REQUEST_ID" => SecureRandom.uuid
       io, client_io = \
         begin
           Socket.pair(Socket::AF_UNIX, Socket::SOCK_STREAM, 0)
