@@ -40,7 +40,7 @@ module ActionCable
 
       class UnknownSubscription < Error
         def initialize(identifier)
-          "Unable to find subscription with identifier: #{identifier}"
+          super "Unable to find subscription with identifier: #{identifier}"
         end
       end
 
