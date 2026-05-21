@@ -73,6 +73,8 @@ module ActionCable
       def restart
         connections.each do |connection|
           connection.close(reason: ActionCable::INTERNAL[:disconnect_reasons][:server_restart])
+        rescue => e
+          logger&.error "Failed to close connection during restart: [#{e.class} - #{e.message}]: #{e.backtrace.first(5).join(" | ")}"
         end
 
         @mutex.synchronize do
