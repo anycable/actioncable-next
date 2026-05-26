@@ -102,6 +102,13 @@ module ActionCable
         ActionCable::Channel::Base.set_callback :subscribe, :around, prepend: true, &wrap
         ActionCable::Channel::Base.set_callback :unsubscribe, :around, prepend: true, &wrap
       end
+
+      ActiveSupport.on_load(:action_cable_connection) do
+        wrap = lambda do |_, inner|
+          app.executor.wrap(source: "application.action_cable", &inner)
+        end
+        ActionCable::Connection::Base.set_callback :command, :around, prepend: true, &wrap
+      end
     end
 
     config.after_initialize do
